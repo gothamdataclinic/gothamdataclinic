@@ -13,6 +13,7 @@
   let fiscalYear = $derived(settings.fiscalYear || 'January 1 – December 31')
   let stateOfIncorporation = $derived(settings.stateOfIncorporation || 'New York')
   let taxDocuments = $derived(settings.taxDocuments ?? [])
+  let ror = $derived(settings.ror || 'https://ror.org/03k0d2d56')
 
   let details = $derived([
     { label: 'Organization Name', value: 'Gotham Data Clinic', hi: false },
@@ -98,7 +99,8 @@
         <ul>
           <li><a href="https://apps.irs.gov/app/eos/" target="_blank" rel="noopener" class="res-link">IRS Tax Exempt Organization Search ↗</a></li>
           <li><a href="https://projects.propublica.org/nonprofits/organizations/843894797" target="_blank" rel="noopener" class="res-link">ProPublica Nonprofit Explorer ↗</a></li>
-          <li><a href="https://app.candid.org/profile/16556010/cielabs-inc-84-3894797" target="_blank" rel="noopener" class="res-link">Candid / GuideStar ↗</a></li>
+          <li><a href="https://app.candid.org/profile/16556010/gotham-data-clinic-inc-84-3894797" target="_blank" rel="noopener" class="res-link">Candid / GuideStar ↗</a></li>
+          <li><a href={ror} target="_blank" rel="noopener" class="res-link">ROR (Research Organization Registry) ↗</a></li>
         </ul>
       </div>
       <div class="contact-box">
