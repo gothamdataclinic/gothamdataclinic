@@ -80,9 +80,11 @@ Payload owns its own Postgres schema directly via `@payloadcms/db-postgres` (not
 
 ## `website/` — public site
 
-**Stack:** SvelteKit 5 (Svelte 5 runes), `adapter-static` in SPA mode. The fallback file is `404.html`, **not** the more common `index.html` — GitHub Pages serves `404.html` for any unmatched path, which is how client-side routing survives a hard refresh/deep link on Pages specifically. Since zero routes are prerendered, `adapter-static` only emits that one shell file, so the root path (`/`) would 404 without a same-content `index.html` too — the build script copies one from the other: `"build": "vite build && cp build/404.html build/index.html"`.
+**Stack:** SvelteKit 5 (Svelte 5 runes), `adapter-static`, every route prerendered (`export const prerender = true` in `+layout.server.ts`), so each page ships real HTML with its `<title>`/meta/OG tags for crawlers. The fallback file is `404.html`, **not** the more common `index.html` — GitHub Pages serves `404.html` for any unmatched path. Don't copy `404.html` over `index.html`: that replaces the prerendered homepage with an empty SPA shell and strips its metadata.
 
-**Data fetching:** every route's data comes from `+page.ts` / `+layout.ts` — universal (not `.server.ts`) load functions, fetching Payload's public REST API (`src/lib/cms.ts`) directly from the browser. This is deliberate: with no prerendering and no server-only load functions, content changes made in the CMS admin appear on next page load with **no rebuild or redeploy required**.
+**Data fetching:** `+layout.server.ts` / `+page.server.ts` load functions fetch Payload's REST API (`src/lib/cms.ts`) at build time. CMS changes reach the site via the `repository_dispatch` rebuild in `.github/workflows/main.yml`.
+
+**Icons & social card:** `static/favicon.png` (48px), `icon.png` (192px), `apple-touch-icon.png`, and `og-image.png` (1200×630) are referenced from `app.html` / `+layout.svelte`, which also emits canonical URLs and Organization JSON-LD.
 
 **Routes** (in the order they appear in `Navigation.svelte`, and the order the CMS admin's "Pages" sidebar group now matches): `/` (Home), `/about` (About & Mission), `/team` (Team), `/events` (Events), `/press` (Publications — renamed from `/publications`), `/donate` (Donate), `/tax-info` (Tax Information).
 
